@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+  <script src="main.js"></script>
+
+
+  <title>米卦</title>
+</head>
+<body>
+  <div id="root">
+    <img class="brand" src="svg-path.svg" alt="logo" />
+
+    <hr class="hr"/>
+
+    <main v-cloak class="container">
+
+      <section class="result">
+        <figcaption class="result__caption">成掛</figcaption>
+
+        <figure class="hexagram">
+          <monogram
+            v-for="(isYang, index) in top"
+            :is-yang="isYang"
+            :key="`top-${index}`"
+          >
+          </monogram>
+          <monogram
+            v-for="(isYang, index) in bottom"
+            :is-yang="isYang"
+            :key="`bot-${index}`"
+            >
+          </monogram>
+        </figure>
+
+        <figcaption v-cloak v-on:click="show(result)" class="result__caption">
+          {{ hexagramName(resultId) }}
+        </figcaption>
+      </section>
+
+      <section class="result">
+        <figcaption class="result__caption">變卦</figcaption>
+
+        <figure class="hexagram">
+          <monogram
+            v-for="(isYang, index) in change"
+            :is-yang="isYang"
+            :key="`chg-${index}`"
+          >
+          </monogram>
+        </figure>
+
+        <figcaption v-cloak v-on:click="show(change)" class="result__caption">
+          {{ hexagramName(changeId) }}
+        </figcaption>
+      </section>
+    </main>
+
+    <hr class="hr"/>
+
+    <section class="input-section">
+      <div class="input-group">
+        <label class="input-group__label">第一把</label>
+        <input class="input-group__input" v-model="first" type="number" min="0" value="0" autocomplete="off"></input>
+        <span class="tooltip" v-cloak>
+          【{{trigramName(first * 7)}}】
+          <span class="tooltip__popup">
+            {{ first }} % 8 = {{ first % 8 }}
+          </span>
+        </span>
+      </div>
+      <div class="input-group">
+        <label class="input-group__label">第二把</label>
+        <input class="input-group__input" v-model="second" type="number" min="0" value="0" autocomplete="off"></input>
+        <span class="tooltip" v-cloak>
+          【{{trigramName(first2Sum * 7)}}】
+          <span class="tooltip__popup">
+            ({{ first }} + {{ second }}) % 8 = {{ first2Sum % 8 }}
+          </span>
+        </span>
+      </div>
+      <div class="input-group">
+        <label class="input-group__label">第三把</label>
+        <input class="input-group__input" v-model="third" type="number" min="0" value="0" autocomplete="off"></input>
+        <span class="tooltip" v-cloak>
+          【{{changeName(third)}}】
+          <span class="tooltip__popup">
+            {{ third }} % 6 = {{ third % 6 }}
+          </span>
+        </span>
+      </div>
+    </section>
+    <button class="btn" type="button" v-on:click="grabRice" v-on:touchEnd="grabRice">抓米</button>
+    <modal v-if="showModal" :loading="loading" :hexagram-data="hexagramData" :hexagram="modalHexagram" :hide="hide"><modal />
+  </div>
+</body>
+</html>
